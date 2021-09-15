@@ -1,0 +1,237 @@
+--------------------------------------------------------------------------------
+|  Hidden Markov Model of Histone Modifications in Mouse Embryonic Stem Cells  |
+--------------------------------------------------------------------------------
+
+Christian Chua
+    Amit Pande, Izsvak Lab, Max Delbruck Center for Molecular Medicine
+    September 2021
+
+-----------------------
+| Project Description |
+-----------------------
+
+TBA
+
+----------------------
+| Table of Contents  |
+----------------------
+
+Date        Description
+----------  -------------------------------------------------------------------------------
+DD/MM/YYYY
+10/09/2021  download dataset from NCBI
+13/09/2021  
+
+----------------------
+|     DD/MM/YYYY     |
+----------------------
+
+FORMAT
+
+----------------------
+|     10/09/2021     |
+----------------------
+
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE36114
+
+This accession that contains histone modification data (H2AZ, H3K27ac, H3K27me3, H3K36me3, H3K4me1, H3K4me2, H3K4me3 and H3K9me3) 
+using ChIP-seq in mouse embryonic stem cells along with additional data.
+
+Series Matrix Files:
+
+GSE36114-GPL10945_series_matrix.txt
+GSE36114-GPL11002_series_matrix.txt
+GSE36114-GPL15064_series_matrix.txt
+GSE36114-GPL16417_series_matrix.txt
+GSE36114-GPL9115_series_matrix.txt
+GSE36114-GPL9250_series_matrix.txt
+
+GSE36114_RAW.tar	TAR (of BAM, BED, GTF, TXT)
+
+----------------------
+|     13/09/2021     |
+----------------------
+
+https://genome.ucsc.edu/goldenPath/help/bigWig.html
+
+bigWig format:
+
+- an indexed binary format
+- useful for dense, continuous data
+- displayed in the Genome Browser as a graph
+- created from wiggle (wig) type files using the program wigToBigWig
+
+advantages:
+
+- considerably faster display performance
+    - only portions needed for display are transferred to the Genome Browser server. 
+- remains on local web-accessible server (http, https or ftp)
+    - only portion needed is locally cached as a "sparse file"
+
+Wiggle data must be continuous and consist of equally sized elements. 
+If your data is sparse or contains elements of varying sizes, use the bedGraph format instead of the wiggle format. 
+If you have a very large bedGraph data set, you can convert it to the bigWig format using the bedGraphToBigWig program.
+
+Note that the wigToBigWig utility uses a substantial amount of memory: approximately 50% more memory than that of the uncompressed wiggle input file. 
+While running the wigToBigWig utility, we recommend that you monitor the system's memory usage with the top command. The bedGraphToBigWig utility uses 
+about 25% more RAM than the uncompressed bedGraph input file.
+
+I. Data Exploration
+
+pwd
+/home/cchua/Izsvak/histone
+
+ls -1
+GSE36114-GPL10945_series_matrix.txt
+GSE36114-GPL11002_series_matrix.txt
+GSE36114-GPL15064_series_matrix.txt
+GSE36114-GPL16417_series_matrix.txt
+GSE36114-GPL9115_series_matrix.txt
+GSE36114-GPL9250_series_matrix.txt
+GSE36114_RAW.tar
+HMM_mESCs_notebook.txt
+
+tar -xvf GSE36114_RAW.tar
+GSM2111307_E14_H3K27me3.bed.gz
+GSM881344_E14_TAF1.bed.gz
+GSM881345_E14_IgGR.bed.gz
+GSM881346_E14_MeDIP.bed.gz
+GSM881347_E14_MRE.bed.gz
+GSM881348_E14_H2AZ.bed.gz
+GSM881349_E14_H3K27ac.bed.gz
+GSM881351_E14_H3K36me3.bed.gz
+GSM881352_E14_H3K4me1.bed.gz
+GSM881353_E14_H3K4me2.bed.gz
+GSM881354_E14_H3K4me3.bed.gz
+GSM881355_E14_RNA.bam.gz
+GSM881355_E14_RNA_genes.expr.txt.gz
+GSM881355_E14_RNA_transcripts.expr.txt.gz
+GSM881355_E14_RNA_transcripts.gtf.gz
+GSM881356_E14_H2AZ_d4.bed.gz
+GSM881357_E14_H3K27ac_d4.bed.gz
+GSM881358_E14_H3K27me3_d4.bed.gz
+GSM881359_E14_H3K36me3_d4.bed.gz
+GSM881360_E14_H3K4me1_d4.bed.gz
+GSM881361_E14_H3K4me2_d4.bed.gz
+GSM881362_E14_H3K4me3_d4.bed.gz
+GSM881363_E14_H3K9me3_d4.bed.gz
+GSM881364_E14_RNA_d4.bam.gz
+GSM881364_E14_RNA_d4_genes.expr.txt.gz
+GSM881364_E14_RNA_d4_transcripts.expr.txt.gz
+GSM881364_E14_RNA_d4_transcripts.gtf.gz
+GSM881365_E14_H2AZ_d6.bed.gz
+GSM881366_E14_H3K27ac_d6.bed.gz
+GSM881367_E14_H3K27me3_d6.bed.gz
+GSM881368_E14_H3K36me3_d6.bed.gz
+GSM881369_E14_H3K4me1_d6.bed.gz
+GSM881370_E14_H3K4me2_d6.bed.gz
+GSM881371_E14_H3K4me3_d6.bed.gz
+GSM881372_E14_H3K9me3_d6.bed.gz
+GSM881373_E14_RNA_d6.bam.gz
+GSM881373_E14_RNA_d6_genes.expr.txt.gz
+GSM881373_E14_RNA_d6_transcripts.expr.txt.gz
+GSM881373_E14_RNA_d6_transcripts.gtf.gz
+GSM881374_piPS_H2AZ.bed.gz
+GSM881375_piPS_H3K27ac.bed.gz
+GSM881376_piPS_H3K27me3.bed.gz
+GSM881377_piPS_H3K36me3.bed.gz
+GSM881378_piPS_H3K4me1.bed.gz
+GSM881379_piPS_H3K4me2.bed.gz
+GSM881380_piPS_H3K4me3.bed.gz
+GSM881381_piPS_H3K9me3.bed.gz
+GSM881382_piPS_TAF1.bed.gz
+GSM881383_piPS_P300.bed.gz
+GSM881384_piPS_OCT4.bed.gz
+GSM881385_piPS_NANOG.bed.gz
+GSM881386_piPS_IgG.bed.gz
+GSM881387_piPS_MeDIP.bed.gz
+GSM881388_piPS_MRE.bed.gz
+GSM881389_piPS_RNA.bam.gz
+GSM881389_piPS_RNA_genes.expr.txt.gz
+GSM881389_piPS_RNA_transcripts.expr.txt.gz
+GSM881389_piPS_RNA_transcripts.gtf.gz
+GSM881390_H1_H2AZ.bed.gz
+
+move the pig and human data into another folder: archive/
+move day 4 data into day_4/ and day 6 into day_6/
+
+we have bam file for RNA and transcript expression data 
+
+bed files:
+
+TAF1: TATA Box Binding Protein (TBP)-Associated Factor
+IgG: Immunoglobulin G
+MeDIP: Methylated DNA immunoprecipitation
+MRE: microRNA response elements???
+H2AZ: variant of histone H2A
+H3K27ac: acetylation of lysine 27 on histone H3 protein. associated with the higher activation of transcription; an active enhancer mark.
+H3K27me3: tri-methylation of lysine 27 on histone H3 protein. associated with the downregulation of nearby genes via the formation of heterochromatic regions.
+H3K36me3: tri-methylation of lysine 36 on histone H3 protein. associated with gene bodies
+H3K4me1: mono-methylation of lysine 4 on histone H3 protein. associated with gene enhancers
+H3K4me2: di-methylation of lysine 4 on histone H3 protein. enriched in cis-regulatory regions, in particular promoters, of transcriptionally active genes 
+H3K4me3: tri-methylation of lysine 4 on histone H3 protein. associated with the activation of transcription of nearby genes. 
+
+gunzip *_E14_H3*
+took ~1 hour for 5 files
+
+head GSM881349_E14_H3K27ac.bed
+chr1    3000376 3000526 -
+chr1    3000384 3000534 +
+chr1    3000567 3000717 +
+chr1    3001285 3001435 -
+chr1    3001305 3001455 +
+chr1    3001606 3001756 +
+chr1    3001606 3001756 +
+chr1    3001687 3001837 +
+chr1    3001702 3001852 -
+chr1    3002146 3002296 +
+
+appears to be organized by chromosomal location
+
+conda create --name env2
+conda activate env2
+conda install -c bioconda ucsc-bedgraphtobigwig
+conda install -c bioconda ucsc-fetchchromsizes
+conda install -c bioconda ucsc-bedclip
+conda install -c bioconda bedtools
+
+II. Create bigWig track from a bedGraph file
+    1. Create a bedGraph format file
+        https://genome.ucsc.edu/goldenPath/help/bedgraph.html
+
+        awk '{printf "%s\t%d\t%d\t%2.3f\n" , $1,$2,$3,$5}' myBed.bed > myFile.bedgraph
+        sort -k1,1 -k2,2n myFile.bedgraph > myFile_sorted.bedgraph
+
+        GSM881349_E14_H3K27ac.bed
+
+        fetchChromSizes mm9 > mm9.chrom.sizes
+
+        bedClip GSM881349_E14_H3K27ac.bed mm9.chrom.sizes GSM881349_E14_H3K27ac_out.bed
+
+        bedtools merge -i GSM881349_E14_H3K27ac_out.bed | perl -pe 's/,\S+//g' > GSM881349_E14_H3K27ac_merged.bed
+
+        awk '{printf "%s\t%d\t%d\t%2.3f\n" , $1,$2,$3,$5}' GSM881349_E14_H3K27ac_merged.bed | sort -k1,1 -k2,2n > GSM881349_E14_H3K27ac.bedgraph
+
+        bedGraphToBigWig GSM881349_E14_H3K27ac.bedgraph mm9.chrom.sizes GSM881349_E14_H3K27ac.bw
+
+    2. Move the newly created bigWig file (myBigWig.bw) to a web-accessible http, https, or ftp location.
+        use a free site like dropbox.com to upload your bibwig file.
+
+Paste the URL into the custom track entry form or construct a custom track using a single track line.
+Paste the custom track line into the text box on the custom track management page.
+
+----------------------
+|     15/09/2021     |
+----------------------
+
+Tried visualizing the bigwig files in dropbox, does not work:
+https://www.dropbox.com/home?preview=GSM881349_E14_H3K27ac.bw
+
+due to this:
+http://genome.ucsc.edu/goldenPath/help/customTrack.html#TROUBLE
+
+trying on github:
+git clone https://github.com/Chris-Anthony/mESC_histone_HMM.git
+git remote rename origin upstream
+git remote add origin https://github.com/Chris-Anthony/mESC_histone_HMM.git
+git remote -v
